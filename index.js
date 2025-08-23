@@ -21,7 +21,8 @@ app.post('/t',(req,res)=>{
        return res.status(400).json({message:"no text"})
     }
      let id= nextID++;
-    let task ={id,text};
+     let isDone=false;
+    let task ={id,text,isDone};
     tasks[id]= task;
 res.status(201).json({message:"ok"})
 })
@@ -43,6 +44,26 @@ if(id < 0 || id > tasks.length || tasks[id] == null){
 }
 res.json(tasks[id])
 })
+
+app.patch('/t/:id',(req,res)=>{
+let id = req.params.id;
+if(id < 0 || id > tasks.length || tasks[id] == null){
+    return res.status(400).json({message:"does not exist"})
+}
+let isDone = req.body.isDone;
+if(isDone != undefined){
+  tasks[id].isDone = isDone;
+}
+let text = req.body.txt;
+ if(text){
+       tasks[id].text = text;
+    }
+let obj= tasks[id];
+obj.text=text;
+
+res.json(tasks[id])
+})
+
 
 
 app.listen(port,()=>{console.log(`http://localhost:${port}`)});
