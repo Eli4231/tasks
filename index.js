@@ -36,4 +36,13 @@ res.status(200).json({message:"Deleted!"})
 })
 
 
+app.get('/t/:id',(req,res)=>{
+let id = req.params.id;
+if(id < 0 || id > tasks.length || tasks[id] == null){
+    return res.status(400).json({message:"does not exist"})
+}
+res.json(tasks[id])
+})
+
+
 app.listen(port,()=>{console.log(`http://localhost:${port}`)});
