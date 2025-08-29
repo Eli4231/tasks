@@ -8,9 +8,13 @@
 </head>
 <body>
     <h1>to do list</h1>
-   <input type="text" id="taskInput" placeholder="כתוב משימה...">
-  <button onclick="addTask()">הוסף</button>
-  <table>
+    <div>
+   <label for="txt">text:</label>
+   <br>
+   <textarea id="txt" maxlength="50"></textarea>
+   <button onclick="addTasx()">send</button>
+    </div>
+  <table border="1">
     <thead>
         <tr>
             <th>id</th>
@@ -22,9 +26,6 @@
     </thead>
     <tbody id="myTable"></tbody>
   </table>
-
-
-  <ul id="taskList"></ul>
 
     <script src="./client.js"></script>
     <script src="./index.js"></script>
