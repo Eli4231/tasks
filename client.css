@@ -1,26 +1,231 @@
- body { 
-    font-family: Arial, sans-serif;
-     direction: rtl;
-      margin: 30px; 
+/* ============ Root & Theme ============ */
+:root{
+  --bg1: 18,18,28;
+  --bg2: 42,8,69;
+  --accent1: 88,101,242;  /* סגול-כחול */
+  --accent2: 255,84,129;  /* ורוד ניאון */
+  --glass: 255,255,255;
+  --txt: 240,240,245;
+  --muted: 170,170,185;
+  --ok: 46,204,113;
+  --warn: 255,183,77;
+  --danger: 244,67,54;
+  --shadow: rgba(0,0,0,.35);
 }
 
-input, button {
-     margin: 5px;
-      padding: 5px;
-     }
+@media (prefers-color-scheme: light){
+  :root{
+    --bg1: 225,235,255;
+    --bg2: 190,210,255;
+    --txt: 25,28,35;
+    --muted: 85,95,115;
+    --shadow: rgba(0,0,0,.15);
+  }
+}
 
-ul {
-     list-style: none;
-      padding: 0;
-     }
-    
-li {
-     margin: 5px 0;
-      padding: 5px;
-       border: 1px solid #ccc;
-     }
+/* ============ Page ============ */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: Inter, Rubik, "Segoe UI", Arial, sans-serif;
+  color: rgb(var(--txt));
+  background:
+    radial-gradient(1200px 800px at 10% -10%, rgba(var(--accent2),.18), transparent 60%),
+    radial-gradient(900px 600px at 110% 30%, rgba(var(--accent1),.16), transparent 60%),
+    linear-gradient(135deg, rgb(var(--bg1)) 0%, rgb(var(--bg2)) 100%);
+  background-attachment: fixed;
+  overflow-y: overlay;
+}
 
-.done {
-     text-decoration: line-through;
-      color: gray; 
-    }
+/* יפה לעין כשמסמנים טקסט */
+::selection{ background: rgba(var(--accent2),.35); }
+
+/* גלילה אלגנטית */
+*::-webkit-scrollbar{height:10px;width:10px}
+*::-webkit-scrollbar-thumb{
+  background: linear-gradient(180deg, rgb(var(--accent1)), rgb(var(--accent2)));
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-track{background: transparent}
+
+/* ============ Layout Card (Glass) ============ */
+.container{
+  max-width: 1000px;
+  margin: 48px auto;
+  padding: 28px;
+  border-radius: 24px;
+  background: rgba(var(--glass), .08);
+  backdrop-filter: blur(14px) saturate(120%);
+  box-shadow: 0 20px 60px var(--shadow), inset 0 1px 0 rgba(255,255,255,.06);
+  animation: floatIn .7s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes floatIn{
+  from{ transform: translateY(12px) scale(.98); opacity: 0; }
+  to{   transform: translateY(0)    scale(1);    opacity: 1; }
+}
+
+h1{
+  margin: 0 0 18px;
+  font-weight: 800;
+  letter-spacing: .3px;
+  line-height: 1.1;
+  font-size: clamp(28px, 4vw, 40px);
+  background: linear-gradient(90deg, rgb(var(--accent2)), rgb(var(--accent1)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-align: center;
+}
+
+/* ============ Controls ============ */
+.actions{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 18px;
+}
+
+textarea, input[type="text"]{
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  color: rgb(var(--txt));
+  outline: none;
+  transition: .25s ease;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+}
+textarea{ min-height: 72px; resize: vertical; }
+
+textarea:focus, input[type="text"]:focus{
+  border-color: rgba(var(--accent1), .65);
+  box-shadow: 0 0 0 6px rgba(var(--accent1), .15), inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+/* ============ Buttons (Liquid) ============ */
+.btn{
+  --glow: 0 6px 16px rgba(0,0,0,.2), 0 0 0 2px rgba(255,255,255,.06), 0 12px 32px rgba(0,0,0,.25);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  color: white;
+  font-weight: 700;
+  letter-spacing: .3px;
+  transition: transform .15s ease, box-shadow .25s ease, filter .25s ease;
+  background: linear-gradient(135deg, rgb(var(--accent1)) 0%, rgb(var(--accent2)) 100%);
+  box-shadow: var(--glow);
+  isolation: isolate;
+}
+.btn::after{
+  content:"";
+  position:absolute; inset:0;
+  border-radius: inherit;
+  background: radial-gradient(160% 120% at 10% 10%, rgba(255,255,255,.35), transparent 40%),
+              radial-gradient(160% 120% at 90% 90%, rgba(255,255,255,.15), transparent 40%);
+  mix-blend-mode: overlay; pointer-events:none;
+}
+.btn:hover{ transform: translateY(-1px); filter: saturate(120%); }
+.btn:active{ transform: translateY(0); filter: saturate(100%); }
+.btn.success{ background: linear-gradient(135deg, #2ecc71, #16a085); }
+.btn.warn{    background: linear-gradient(135deg, #f6d365, #fda085); color:#222;}
+.btn.danger{  background: linear-gradient(135deg, #ff6a88, #ff99ac); }
+
+#addBtn{ min-width: 120px; }
+
+/* ============ Table (Glass + Sticky Header) ============ */
+.table-wrap{
+  overflow: auto;
+  border-radius: 16px;
+  box-shadow: 0 12px 34px var(--shadow);
+  border: 1px solid rgba(255,255,255,.08);
+}
+table{
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255,255,255,.04);
+  backdrop-filter: blur(10px);
+}
+thead th{
+  position: sticky; top: 0; z-index: 2;
+  background: rgba(255,255,255,.10);
+  border-bottom: 1px solid rgba(255,255,255,.15);
+}
+th, td{
+  text-align: center;
+  padding: 14px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  white-space: nowrap;
+}
+tbody tr{
+  transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+tbody tr:hover{
+  background: rgba(255,255,255,.08);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px var(--shadow) inset;
+}
+tbody tr.done td:nth-child(2){
+  text-decoration: line-through;
+  opacity: .7;
+}
+
+/* זברות עדינה */
+tbody tr:nth-child(odd){ background: rgba(255,255,255,.03); }
+
+/* ============ Toggle (checkbox) ============ */
+input[type="checkbox"]{
+  appearance: none;
+  width: 48px; height: 28px;
+  background: rgba(255,255,255,.18);
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.25);
+  position: relative; cursor: pointer;
+  transition: background .25s ease, border-color .25s ease, box-shadow .25s ease;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,.25);
+}
+input[type="checkbox"]::after{
+  content:"";
+  position:absolute; top:50%; left:6px;
+  width: 18px; height: 18px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,.35);
+  transition: left .25s ease, background .25s ease, box-shadow .25s ease;
+}
+input[type="checkbox"]:checked{
+  background: linear-gradient(90deg, rgba(var(--accent1),.9), rgba(var(--accent2),.9));
+  border-color: transparent;
+  box-shadow: 0 0 0 6px rgba(var(--accent1), .15);
+}
+input[type="checkbox"]:checked::after{ left: 24px; }
+
+/* ============ Search ============ */
+.search{
+  display:flex; gap:10px; align-items:center; margin: 8px 0 16px;
+}
+.search input{
+  flex:1;
+}
+
+/* ============ Micro Interactions ============ */
+.fade-in{ animation: fade .45s ease both; }
+@keyframes fade{ from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+
+/* פולסים עדינים סביב אלמנטים בפוקוס */
+.glow:focus{ box-shadow: 0 0 0 8px rgba(var(--accent2),.2), 0 0 0 2px rgba(255,255,255,.15) inset; }
+
+/* ============ Utility ============ */
+.center{ text-align:center }
+.mt-12{ margin-top:12px }
+.mt-24{ margin-top:24px }
+.w-100{ width:100% }

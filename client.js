@@ -7,21 +7,25 @@ async function getData() {
 
 }
 
-function createTable(data){
-    let txt="";
-    for (obj of data){
-        if(obj){
+function createTable(data) {
+    let txt = "";
+    for (let obj of data) {
+        if (obj) {
             txt += `<tr>` 
             txt+= `<td>${obj.id}</td>`;
             txt+= `<td>${obj.text}</td>`;
-            txt+= `<td>${obj.isDone}</td>`;
-            txt+= `<td><button>✏️</button</td>`;
+            txt+= `<td>
+                      <input type="checkbox" ${obj.isDone ? "checked" : ""} 
+                        onchange="toggleTask(${obj.id}, this.checked)">
+                   </td>`;
+            txt+= `<td><button onclick="editTask(${obj.id}, this)">✏️</button></td>`;
             txt+= `<td><button onclick="deleteTask(${obj.id})">🗑️</button></td>`;
             txt += `</tr>` ;
         }
     }
-    document.getElementById('myTable').innerHTML= txt;
+    document.getElementById('myTable').innerHTML = txt;
 }
+
 
 async function addTasx() {
    
@@ -62,5 +66,56 @@ async function deleteTask(id) {
         alert("שגיאה: " + err);
     }
 }
+
+function editTask(id, btn) {
+    const row = btn.closest('tr');
+    const currentText = row.cells[1].innerText;
+
+    const input = document.getElementById("txt");
+    input.value = currentText;
+    input.focus();
+
+    const addBtn = document.getElementById("addBtn");
+    addBtn.textContent = "send";
+    addBtn.onclick = function () { updateTask(id); };
+}
+
+async function updateTask(id) {
+    let newText = document.getElementById("txt").value;
+    if (!newText) return alert("לא הכנסת טקסט");
+
+    let response = await fetch(`/t/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ txt: newText })
+    });
+    if (response.ok) {
+        alert("עודכן בהצלחה");
+        document.getElementById("txt").value = "";
+        document.querySelector("button").onclick = addTasx; 
+        getData();
+    }
+}
+
+
+async function toggleTask(id, isDone) {
+    let response = await fetch(`/t/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isDone })
+    });
+    if (response.ok) {
+        getData();
+    }
+}
+function searchTasks() {
+    let filter = document.getElementById("search").value.toLowerCase();
+    let rows = document.querySelectorAll("#myTable tr");
+    rows.forEach(row => {
+        let text = row.cells[1].innerText.toLowerCase();
+        row.style.display = text.includes(filter) ? "" : "none";
+    });
+}
+
 
 getData();
