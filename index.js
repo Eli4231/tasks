@@ -1,7 +1,9 @@
 const express =require('express');
 const app=express();
 const port = 5000;
+const path = require('path');
 app.use(express.json());
+app.use(express.static(path.join(__dirname)));
 
 const tasks= [];
 let nextID=1;
@@ -29,7 +31,7 @@ res.status(201).json({message:"ok"})
 
 app.delete('/t/:id',(req,res)=>{
 let id =req.params.id;
-if(id < 0 || tasks.length < id){
+if(id < 0 || tasks.length < id || tasks[id]== null){
     return res.status(400).json({message:"does not exist"})
 }
 tasks[id]=null;
@@ -58,8 +60,6 @@ let text = req.body.txt;
  if(text){
        tasks[id].text = text;
     }
-let obj= tasks[id];
-obj.text=text;
 
 res.json(tasks[id])
 })
